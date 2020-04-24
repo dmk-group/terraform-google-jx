@@ -9,19 +9,19 @@ output "vault_sa" {
 
 output "vault_bucket_name" {
   description = "Bucket name for Vault data"
-  value = google_storage_bucket.vault_bucket.name
+  value       = google_storage_bucket.vault_bucket.name
 }
 
 output "vault_bucket_url" {
-    value = google_storage_bucket.vault_bucket.url
+  value = google_storage_bucket.vault_bucket.url
 }
 
 output "vault_key" {
   description = "Vault KMS key to use"
-  value = google_kms_crypto_key.vault_crypto_key.name
+  value       = google_kms_crypto_key.vault_crypto_key.name
 }
 
 output "vault_keyring" {
-   description = "Name of the KMS keyring for the project"
-  value = google_kms_key_ring.vault_keyring.name
+  description = "Name of the KMS keyring for the project"
+  value       = google_kms_key_ring.vault_keyring.name
 }

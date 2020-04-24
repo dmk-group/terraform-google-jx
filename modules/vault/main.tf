@@ -16,18 +16,18 @@ resource "google_project_service" "cloudkms_api" {
 // https://www.terraform.io/docs/providers/google/d/google_kms_key_ring.html
 // ---------------------------------------------------------------------------
 resource "google_kms_key_ring" "vault_keyring" {
-  provider    = google
-  name        = "keyring-${var.cluster_name}-${var.cluster_id}"
-  location    = "global"
-  depends_on  = [google_project_service.cloudkms_api]
+  provider   = google
+  name       = "keyring-${var.cluster_name}-${var.cluster_id}"
+  location   = "global"
+  depends_on = [google_project_service.cloudkms_api]
 }
 
 resource "google_kms_crypto_key" "vault_crypto_key" {
-  provider         = google
-  name             = "crypto-key-${var.cluster_name}-${var.cluster_id}"
-  key_ring         = google_kms_key_ring.vault_keyring.self_link
-  rotation_period  = "100000s"
-  depends_on       = [google_project_service.cloudkms_api]
+  provider        = google
+  name            = "crypto-key-${var.cluster_name}-${var.cluster_id}"
+  key_ring        = google_kms_key_ring.vault_keyring.self_link
+  rotation_period = "100000s"
+  depends_on      = [google_project_service.cloudkms_api]
 }
 
 // ----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ resource "google_kms_crypto_key" "vault_crypto_key" {
 resource "google_storage_bucket" "vault_bucket" {
   provider      = google
   name          = "vault-${var.cluster_name}-${var.cluster_id}"
-
+  location      = var.zone
   force_destroy = var.force_destroy
 }
 
@@ -51,7 +51,7 @@ resource "google_storage_bucket" "vault_bucket" {
 resource "google_service_account" "vault_sa" {
   provider     = google
   account_id   = "${var.cluster_name}-vt"
-  display_name = substr("Vault service account for cluster ${var.cluster_name}", 0, 100)          
+  display_name = substr("Vault service account for cluster ${var.cluster_name}", 0, 100)
 }
 
 resource "google_project_iam_member" "vault_sa_storage_object_admin_binding" {
@@ -95,7 +95,7 @@ resource "google_service_account_iam_member" "vault_operator_workload_identity_u
 resource "kubernetes_service_account" "vault_sa" {
   automount_service_account_token = true
   metadata {
-    name = "${var.cluster_name}-vt"
+    name      = "${var.cluster_name}-vt"
     namespace = var.jenkins_x_namespace
     annotations = {
       "iam.gke.io/gcp-service-account" = google_service_account.vault_sa.email

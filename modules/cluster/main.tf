@@ -4,14 +4,14 @@
 // https://www.terraform.io/docs/providers/google/r/container_cluster.html
 // ----------------------------------------------------------------------------
 resource "google_container_cluster" "jx_cluster" {
-  provider                 = google-beta
-  name                     = var.cluster_name
-  description              = "jenkins-x cluster"
-  location                 = var.zone
-  enable_kubernetes_alpha  = var.enable_kubernetes_alpha
-  enable_legacy_abac       = var.enable_legacy_abac
-  logging_service          = var.logging_service
-  monitoring_service       = var.monitoring_service
+  provider                = google-beta
+  name                    = var.cluster_name
+  description             = "jenkins-x cluster"
+  location                = var.zone
+  enable_kubernetes_alpha = var.enable_kubernetes_alpha
+  enable_legacy_abac      = var.enable_legacy_abac
+  logging_service         = var.logging_service
+  monitoring_service      = var.monitoring_service
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default

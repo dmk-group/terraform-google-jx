@@ -7,7 +7,7 @@
 resource "google_storage_bucket" "backup_bucket" {
   provider      = google
   name          = "backup-${var.cluster_name}-${var.cluster_id}"
-
+  location      = var.zone
   force_destroy = var.force_destroy
 }
 
@@ -20,7 +20,7 @@ resource "google_storage_bucket" "backup_bucket" {
 resource "google_service_account" "velero_sa" {
   provider     = google
   account_id   = "${var.cluster_name}-vo"
-  display_name = substr("Velero service account for cluster ${var.cluster_name}", 0, 100)          
+  display_name = substr("Velero service account for cluster ${var.cluster_name}", 0, 100)
 }
 
 resource "google_project_iam_member" "velero_sa_storage_admin_binding" {
@@ -67,7 +67,7 @@ resource "kubernetes_namespace" "velero_namespace" {
 resource "kubernetes_service_account" "verlero_sa" {
   automount_service_account_token = true
   metadata {
-    name = "velero-server"
+    name      = "velero-server"
     namespace = var.velero_namespace
     annotations = {
       "iam.gke.io/gcp-service-account" = google_service_account.velero_sa.email
